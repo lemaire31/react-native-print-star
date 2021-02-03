@@ -1,5 +1,5 @@
 
-# react-native-star-prnt
+# react-native-print-star
 
 react-native bridge for [Star micronics printers](http://www.starmicronics.com/pages/All-Products).
 
@@ -7,7 +7,9 @@ Ionic/Cordova Version ➜ [here](https://github.com/auctifera-josed/starprnt)
 
 ## Installation
 
-`$ npm install react-native-star-prnt --save`
+`$ yarn add react-native-print-star`
+
+`$ npm install react-native-print-star --save`
 
 ### Link
 
@@ -32,7 +34,7 @@ For Bluetooth printers:
 
 ## Usage
 ```javascript
-import { StarPRNT } from 'react-native-star-prnt';
+import { StarPRNT } from 'react-native-print-star';
 
 async function portDiscovery() {
     try {
@@ -46,3 +48,19 @@ async function portDiscovery() {
 ```
   
 ## Take a look at the [Documentation](/Documentation.md)
+
+## Supported Printers?
+
+#Tested and Supported:
+  - SM-T300i
+  - TSP100III Bluetooth
+
+#Untested and Potentially Supported:
+  - SM-S210i
+  - SM-S220i
+  - SM-S230i
+  - SM-T400i
+  - TSP100
+  - TSP650II
+  - TSP700II
+  - TSP800II

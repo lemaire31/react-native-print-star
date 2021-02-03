@@ -421,7 +421,7 @@ RCT_REMAP_METHOD(print, portName:(NSString *)portName
         else if ([command valueForKey:@"appendCharacterSpace"]) [builder appendCharacterSpace:[[command valueForKey:@"appendCharacterSpace"] intValue]];
         else if ([command valueForKey:@"appendEncoding"]) encoding = [self getEncoding:[command valueForKey:@"appendEncoding"]];
         else if ([command valueForKey:@"appendCodePage"]) [builder appendCodePage:[self getCodePageType:[command valueForKey:@"appendCodePage"]]];
-        else if ([command valueForKey:@"append"]) [builder appendData:[[command valueForKey:@"append"] dataUsingEncoding:encoding]];
+        // else if ([command valueForKey:@"append"]) [builder appendData:[[command valueForKey:@"append"] dataUsingEncoding:encoding]];
         else if ([command valueForKey:@"appendRaw"]) [builder appendRawData:[[command valueForKey:@"appendRaw"] dataUsingEncoding:encoding]];
         else if ([command valueForKey:@"appendEmphasis"]) [builder appendDataWithEmphasis:[[command valueForKey:@"appendEmphasis"] dataUsingEncoding:encoding]];
         else if ([command valueForKey:@"enableEmphasis"]) [builder appendEmphasis:[[command valueForKey:@"enableEmphasis"] boolValue]];
@@ -555,7 +555,7 @@ RCT_REMAP_METHOD(print, portName:(NSString *)portName
             }
             else [builder appendBitmap:image diffusion:diffusion width:width bothScale:bothScale rotation:rotation];
         }
-        else if ([command valueForKey:@"appendBitmapText"]) {
+        else if ([command valueForKey:@"append"] || [command valueForKey:@"appendBitmapText"]) {
             NSString *text = [command valueForKey:@"appendBitmapText"];
             NSInteger width = ([command valueForKey:@"width"]) ? [[command valueForKey:@"width"] intValue] : 576;
             NSString *fontName = ([command valueForKey:@"font"]) ? [command valueForKey:@"font"] : @"Menlo";

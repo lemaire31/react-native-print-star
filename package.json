@@ -1,5 +1,5 @@
 {
-  "name": "react-native-printers-star",
+  "name": "react-native-print-star",
   "version": "1.0.0",
   "description": "StarPRNT React Native bridge for Star Micronics Bluetooth/LAN printers",
   "types": "./types/index.d.ts",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lemaire31/react-native-printers-star"
+    "url": "https://github.com/lemaire31/react-native-print-star"
   },
   "keywords": [
     "react-native",
