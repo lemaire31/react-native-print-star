@@ -8,18 +8,11 @@ import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.Rect;
 import android.graphics.Color;
-import android.provider.MediaStore;
 import android.text.TextPaint;
-import android.net.Uri;
-import android.provider.MediaStore;
-import androidx.annotation.Nullable;
 import android.text.StaticLayout;
 import android.text.Layout;
-import android.util.Base64;
 import android.graphics.BitmapFactory;
 
-import com.facebook.common.util.ExceptionWithNoStacktrace;
-import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -31,14 +24,13 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableType;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +48,6 @@ import com.starmicronics.starioextension.ICommandBuilder.CutPaperAction;
 import com.starmicronics.starioextension.ICommandBuilder.CodePageType;
 import com.starmicronics.starioextension.StarIoExtManager;
 import com.starmicronics.starioextension.StarIoExtManagerListener;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONException;
 
 public class RNStarPrntModule extends ReactContextBaseJavaModule {
 
@@ -555,14 +543,15 @@ public class RNStarPrntModule extends ReactContextBaseJavaModule {
 			} else if (command.hasKey("appendBitmap")) {
 				ContentResolver contentResolver = context.getContentResolver();
 				String _uriString = command.getString("appendBitmap");
-				String uriString = _uriString.substring(_uriString.indexOf(",") + 1);
+				// String uriString = _uriString.substring(_uriString.indexOf(",") + 1);
 				boolean diffusion = (command.hasKey("diffusion")) ? command.getBoolean("diffusion") : true;
 				int width = (command.hasKey("width")) ? command.getInt("width") : 576;
 				boolean bothScale = (command.hasKey("bothScale")) ? command.getBoolean("bothScale") : true;
 				ICommandBuilder.BitmapConverterRotation rotation = (command.hasKey("rotation")) ? getConverterRotation(command.getString("rotation")) : getConverterRotation("Normal");
 
-				final byte[] decodedBytes = Base64.decode(uriString, Base64.DEFAULT);
-				Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+				// final byte[] decodedBytes = Base64.decode(uriString, Base64.DEFAULT);
+				// Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+				Bitmap bitmap = getBitmapFromURL(_uriString);
 				if (command.hasKey("absolutePosition")) {
 					int position = command.getInt("absolutePosition");
 					builder.appendBitmapWithAbsolutePosition(bitmap, diffusion, width, bothScale, rotation, position);
@@ -591,6 +580,21 @@ public class RNStarPrntModule extends ReactContextBaseJavaModule {
 			}
 		}
 	};
+
+  private Bitmap getBitmapFromURL(String src) {
+    try {
+      URL url = new URL(src);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      connection.setDoInput(true);
+      connection.connect();
+      InputStream input = connection.getInputStream();
+      Bitmap myBitmap = BitmapFactory.decodeStream(input);
+      return myBitmap;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
 	//ICommandBuilder Constant Functions
 	private ICommandBuilder.InternationalType getInternational(String international) {
