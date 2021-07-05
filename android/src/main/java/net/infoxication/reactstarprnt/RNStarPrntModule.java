@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.Rect;
 import android.graphics.Color;
+import android.os.Environment;
 import android.text.TextPaint;
 import android.text.StaticLayout;
 import android.text.Layout;
@@ -25,6 +26,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.bridge.WritableMap;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -551,7 +553,7 @@ public class RNStarPrntModule extends ReactContextBaseJavaModule {
 
 				// final byte[] decodedBytes = Base64.decode(uriString, Base64.DEFAULT);
 				// Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-				Bitmap bitmap = getBitmapFromURL(_uriString);
+				Bitmap bitmap = getBitmap(_uriString);
 				if (command.hasKey("absolutePosition")) {
 					int position = command.getInt("absolutePosition");
 					builder.appendBitmapWithAbsolutePosition(bitmap, diffusion, width, bothScale, rotation, position);
@@ -581,15 +583,24 @@ public class RNStarPrntModule extends ReactContextBaseJavaModule {
 		}
 	};
 
-  private Bitmap getBitmapFromURL(String src) {
+  private Bitmap getBitmap(String src) {
     try {
-      URL url = new URL(src);
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setDoInput(true);
-      connection.connect();
-      InputStream input = connection.getInputStream();
-      Bitmap myBitmap = BitmapFactory.decodeStream(input);
-      return myBitmap;
+			if (src.startsWith("http")) {
+				URL url = new URL(src);
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.setDoInput(true);
+				connection.connect();
+				InputStream input = connection.getInputStream();
+				Bitmap bitmap = BitmapFactory.decodeStream(input);
+				return bitmap;
+			}
+			
+			File sd = Environment.getExternalStorageDirectory();
+			String filePrefix = src.startsWith("file:") ? sd.getAbsolutePath() : "";
+			File image = new File(filePrefix + src);
+			BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+			Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+			return bitmap;
     } catch (IOException e) {
       e.printStackTrace();
       return null;
